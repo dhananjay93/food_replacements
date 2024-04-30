@@ -26,6 +26,7 @@ df_combined = pd.concat([df_group1, df_group2], ignore_index=True)
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
+server = app.server
 
 # Define the layout of the app
 app.layout = html.Div([
