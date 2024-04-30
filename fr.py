@@ -109,7 +109,7 @@ def update_table(selected_food, selected_amount):
         adjusted_weights = original_weights * proportion
     
     # Update Total Calories based on adjusted weights (for display purposes)
-    filtered_df['Total Calories'] = adjusted_weights * 4  # Assuming 4 calories per gram (generic)
+    filtered_df['Total Calories'] = adjusted_weights * 0  # Assuming 4 calories per gram (generic)
 
     # Filter out the selected food item from displaying in the table
     filtered_table_data = [(food, weight, protein, carbs, fats, calories) for food, weight, protein, carbs, fats, calories in 
