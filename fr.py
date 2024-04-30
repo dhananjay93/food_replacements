@@ -49,7 +49,7 @@ server = app.server
 
 # Define the layout of the app
 app.layout = html.Div([
-    html.H1("Food Weight Visualization", style={'text-align': 'center', 'color': '#333333'}),
+    html.H1("Food Replacement Options", style={'text-align': 'center', 'color': '#333333'}),
     html.Div([
         html.Label("Select a food item:", style={'margin-right': '10px'}),
         dcc.Dropdown(
