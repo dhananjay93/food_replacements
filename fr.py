@@ -18,6 +18,10 @@ data_group1 = {
         100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 
         100, 100, 100, 100, 150, 200, 400
     ],
+    'Protein': [0] * 17,
+    'Carbs': [0] * 17,
+    'Fats': [0] * 17,
+    'Total Calories': [0] * 17,
     'Group': ['Carbs'] * 17
 }
 
@@ -27,15 +31,24 @@ data_group2 = {
         "Whey protein", "Tofu", "Low-fat paneer", "Paneer (lower protein)"
     ],
     'Weight': [100, 100, 100, 100, 30, 100, 100, 50],
+    'Protein': [0] * 8,
+    'Carbs': [0] * 8,
+    'Fats': [0] * 8,
+    'Total Calories': [0] * 8,
     'Group': ['Protein Group 1'] * 8
 }
 
 data_group3 = {
     'Food': ["Paneer", "Red meat or 4 eggs", "Cheese"],
     'Weight': [100, 100, 100],
+    'Protein': [0] * 3,
+    'Carbs': [0] * 3,
+    'Fats': [0] * 3,
+    'Total Calories': [0] * 3,
     'Group': ['Protein Group 2'] * 3
 }
 
+# Create DataFrames
 df_group1 = pd.DataFrame(data_group1)
 df_group2 = pd.DataFrame(data_group2)
 df_group3 = pd.DataFrame(data_group3)
@@ -95,12 +108,17 @@ def update_table(selected_food, selected_amount):
         proportion = selected_amount / original_selected_weight
         adjusted_weights = original_weights * proportion
     
+    # Update Total Calories based on adjusted weights (for display purposes)
+    filtered_df['Total Calories'] = adjusted_weights * 4  # Assuming 4 calories per gram (generic)
+
     # Filter out the selected food item from displaying in the table
-    filtered_table_data = [(food, weight) for food, weight in zip(filtered_df['Food'], adjusted_weights) if food != selected_food]
+    filtered_table_data = [(food, weight, protein, carbs, fats, calories) for food, weight, protein, carbs, fats, calories in 
+                           zip(filtered_df['Food'], adjusted_weights, filtered_df['Protein'], 
+                               filtered_df['Carbs'], filtered_df['Fats'], filtered_df['Total Calories']) if food != selected_food]
     
     # Create a Plotly table
     table_fig = go.Figure(data=[go.Table(
-        header=dict(values=['Food', 'Weight (grams)'],
+        header=dict(values=['Food', 'Weight (grams)', 'Protein', 'Carbs', 'Fats', 'Total Calories'],
                     fill_color='#f2f2f2',
                     align='left'),
         cells=dict(values=[list(col) for col in zip(*filtered_table_data)],  # Use the filtered data here
@@ -113,7 +131,7 @@ def update_table(selected_food, selected_amount):
         title=f"Alternatives for {selected_amount}gm of {selected_food}",
         margin=dict(l=20, r=20, t=40, b=20),
         font=dict(family="Arial, sans-serif", size=12),
-        width=600, height=300
+        width=800, height=500  # Adjust width and height as needed
     )
     
     # Convert Plotly figure to HTML and return
