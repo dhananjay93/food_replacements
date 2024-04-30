@@ -6,13 +6,13 @@ import streamlit as st
 data_group1 = {
     'Food': ['Poha', 'Paneer', 'Rice', 'A', 'B', 'C', 'D'],
     'Weight': [100, 50, 100, 40, 50, 60, 70],
-    'Group': ['Group 1'] * 7
+    'Group': ['Carbs'] * 7
 }
 
 data_group2 = {
     'Food': ['E', 'F', 'G', 'Z', 'H', 'I', 'J'],
     'Weight': [100, 50, 100, 40, 50, 60, 70],
-    'Group': ['Group 2'] * 7
+    'Group': ['Protein'] * 7
 }
 
 df_group1 = pd.DataFrame(data_group1)
