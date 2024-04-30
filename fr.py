@@ -47,40 +47,29 @@ df_combined = pd.concat([df_group1, df_group2, df_group3], ignore_index=True)
 app = dash.Dash(__name__)
 server = app.server
 
-# Define colors and styles
-colors = {
-    'background': '#f9f9f9',
-    'text': '#333333',
-    'accent': '#007BFF'
-}
-
 # Define the layout of the app
-app.layout = html.Div(style={'backgroundColor': colors['background'], 'padding': '20px'}, children=[
-    html.H1("Food Weight Visualization", style={'textAlign': 'center', 'color': colors['text']}),
-
+app.layout = html.Div([
+    html.H1("Food Weight Visualization", style={'text-align': 'center', 'color': '#333333'}),
     html.Div([
-        html.Label("Select a food item:", style={'margin-right': '10px', 'color': colors['text']}),
+        html.Label("Select a food item:", style={'margin-right': '10px'}),
         dcc.Dropdown(
             id='food-dropdown',
             options=[{'label': food, 'value': food} for food in df_combined['Food']],
             placeholder="Select a food item",
             style={'width': '50%', 'margin-right': '10px'}
         ),
-        html.Label("Adjust amount (grams):", style={'margin-right': '10px', 'color': colors['text']}),
-        html.Div(
-            dcc.Slider(
-                id='amount-slider',
-                min=0,
-                max=200,
-                step=10,
-                value=100,
-                marks={i: str(i) for i in range(0, 201, 20)},  # Display marks every 20 units
-            ),
-            style={'width': '70%', 'margin-bottom': '20px'}
+        html.Label("Adjust amount (grams):", style={'margin-right': '10px'}),
+        dcc.Slider(
+            id='amount-slider',
+            min=0,
+            max=200,
+            step=10,
+            value=100,
+            marks={i: str(i) for i in range(0, 201, 20)}  # Display marks every 20 units
         ),
-    ], style={'width': '80%', 'margin': 'auto', 'textAlign': 'center'}),
-
-    html.Div(id='table-container')
+    ], style={'width': '80%', 'margin': 'auto', 'text-align': 'center', 'padding': '20px'}),
+    
+    html.Div(id='table-container', style={'padding': '20px', 'text-align': 'center'})
 ])
 
 # Define callback to update table based on selected food item and slider value
@@ -91,7 +80,7 @@ app.layout = html.Div(style={'backgroundColor': colors['background'], 'padding':
 )
 def update_table(selected_food, selected_amount):
     if selected_food is None:
-        return html.Div("Please select a food item.", style={'color': 'red', 'fontSize': '18px', 'textAlign': 'center'})
+        return html.Div("Please select a food item.", style={'color': 'red', 'font-size': '18px', 'text-align': 'center'})
 
     selected_food_group = df_combined.loc[df_combined['Food'] == selected_food, 'Group'].values[0]
     filtered_df = df_combined[df_combined['Group'] == selected_food_group]
@@ -106,23 +95,24 @@ def update_table(selected_food, selected_amount):
         proportion = selected_amount / original_selected_weight
         adjusted_weights = original_weights * proportion
     
+    # Filter out the selected food item from displaying in the table
+    filtered_table_data = [(food, weight) for food, weight in zip(filtered_df['Food'], adjusted_weights) if food != selected_food]
+    
     # Create a Plotly table
     table_fig = go.Figure(data=[go.Table(
         header=dict(values=['Food', 'Weight (grams)'],
-                    fill_color=colors['accent'],
-                    font=dict(color='white', size=14),
+                    fill_color='#f2f2f2',
                     align='left'),
-        cells=dict(values=[filtered_df['Food'], adjusted_weights],
+        cells=dict(values=[list(col) for col in zip(*filtered_table_data)],  # Use the filtered data here
                    fill_color='white',
-                   font=dict(color=colors['text'], size=14),
                    align='left'))
     ])
     
     # Update table layout
     table_fig.update_layout(
-        title=f"Alternatives for {selected_food}",
+        title=f"Alternatives for {selected_amount}gm of {selected_food}",
         margin=dict(l=20, r=20, t=40, b=20),
-        font=dict(family="Arial, sans-serif", size=14),
+        font=dict(family="Arial, sans-serif", size=12),
         width=600, height=300
     )
     
