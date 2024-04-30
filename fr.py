@@ -22,7 +22,7 @@ df_group2 = pd.DataFrame(data_group2)
 df_combined = pd.concat([df_group1, df_group2], ignore_index=True)
 
 # Streamlit app
-st.title("Food Weight Visualization")
+st.title("Food Weight Visualization Streamlit")
 
 # Dropdown to select a food item
 selected_food = st.selectbox("Select a food item", df_combined['Food'])
